@@ -12,23 +12,23 @@
     <div id="quote-container" class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 border border-slate-200">
         <div class="flex justify-between items-center border-b pb-6 mb-6">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900">BattleBorn Infrastructures</h1>
+                <h1 class="text-3xl font-bold text-slate-900 leading-tight">BattleBorn Infrastructures</h1>
                 <p class="text-slate-500 italic text-sm">Precision Network Engineering & Infrastructure</p>
             </div>
             <div class="text-right">
-                <p class="font-bold text-blue-700">PROJECT QUOTE</p>
-                <p id="quote-date" class="text-xs text-slate-500"></p>
+                <p class="font-bold text-blue-700 tracking-widest">PROJECT QUOTE</p>
+                <p id="quote-date" class="text-xs text-slate-400"></p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Customer Name</label>
-                <input type="text" id="cust-name" class="w-full border p-2 rounded bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter Name">
+                <input type="text" id="cust-name" class="w-full border p-2 rounded bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter Full Name">
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Deployment Urgency</label>
-                <select id="urgency" class="w-full border p-2 rounded bg-slate-50" onchange="calculateTotal()">
+                <select id="urgency" class="w-full border p-2 rounded bg-slate-50 cursor-pointer" onchange="calculateTotal()">
                     <option value="standard">Standard (7-10 Days)</option>
                     <option value="expedited">Expedited (+20% Labor Cost)</option>
                 </select>
@@ -36,73 +36,131 @@
         </div>
 
         <div class="mb-8">
-            <h3 class="font-bold text-lg mb-4 text-slate-800 border-b pb-2">Hardware Selection</h3>
-            <div class="grid grid-cols-1 gap-3">
-                <div class="flex justify-between items-center p-3 bg-slate-50 rounded border hover:border-blue-300 transition">
-                    <label class="flex items-center gap-3 cursor-pointer">
-                        <input type="checkbox" class="hw-item w-4 h-4" data-price="499" onchange="calculateTotal()"> 
-                        <span>Ubiquiti Dream Machine Special Edition</span>
-                    </label>
-                    <span class="font-mono text-slate-600">$499.00</span>
+            <h3 class="font-bold text-lg mb-4 text-slate-800 border-b pb-2">Infrastructure Inventory</h3>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded border hover:bg-white transition">
+                    <div class="flex items-center gap-4">
+                        <input type="checkbox" class="hw-item w-5 h-5" data-id="udm" data-price="499" onchange="calculateTotal()">
+                        <span class="font-medium text-slate-700">Ubiquiti Dream Machine SE</span>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400">QTY</span>
+                            <input type="number" class="hw-qty w-12 border text-center rounded" value="1" min="1" data-target="udm" onchange="calculateTotal()">
+                        </div>
+                        <span class="font-mono text-slate-600 w-20 text-right">$499.00</span>
+                    </div>
                 </div>
-                <div class="flex justify-between items-center p-3 bg-slate-50 rounded border hover:border-blue-300 transition">
-                    <label class="flex items-center gap-3 cursor-pointer">
-                        <input type="checkbox" class="hw-item w-4 h-4" data-price="189" onchange="calculateTotal()"> 
-                        <span>WiFi 6 Professional Access Point</span>
-                    </label>
-                    <span class="font-mono text-slate-600">$189.00</span>
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded border hover:bg-white transition">
+                    <div class="flex items-center gap-4">
+                        <input type="checkbox" class="hw-item w-5 h-5" data-id="ap" data-price="189" onchange="calculateTotal()">
+                        <span class="font-medium text-slate-700">WiFi 6 Professional AP</span>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400">QTY</span>
+                            <input type="number" class="hw-qty w-12 border text-center rounded" value="1" min="1" data-target="ap" onchange="calculateTotal()">
+                        </div>
+                        <span class="font-mono text-slate-600 w-20 text-right">$189.00</span>
+                    </div>
                 </div>
-                <div class="flex justify-between items-center p-3 bg-slate-50 rounded border hover:border-blue-300 transition">
-                    <label class="flex items-center gap-3 cursor-pointer">
-                        <input type="checkbox" class="hw-item w-4 h-4" data-price="799" onchange="calculateTotal()"> 
-                        <span>48-Port PoE++ Managed Switch</span>
-                    </label>
-                    <span class="font-mono text-slate-600">$799.00</span>
-                </div>
-            </div>
-            <div class="mt-4 flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-100">
-                <span class="font-semibold text-blue-900">Estimated Engineering Hours:</span>
-                <input type="number" id="labor-hours" value="1" min="1" class="border w-20 p-2 text-center rounded font-bold" onchange="calculateTotal()">
-            </div>
-        </div>
-
-        <div class="mb-8">
-            <h3 class="font-bold text-lg mb-4 text-slate-800 border-b pb-2">Monthly Managed Services (SLA)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="p-3 border rounded-lg bg-slate-50">
-                    <label class="flex flex-col cursor-pointer">
-                        <input type="radio" name="sla-tier" value="0" checked onchange="calculateTotal()" class="mb-2">
-                        <span class="font-bold">No SLA</span>
-                        <span class="text-xs text-slate-500 italic">On-call/Hourly Only</span>
-                    </label>
-                </div>
-                <div class="p-3 border rounded-lg bg-slate-50">
-                    <label class="flex flex-col cursor-pointer">
-                        <input type="radio" name="sla-tier" value="149" onchange="calculateTotal()" class="mb-2">
-                        <span class="font-bold text-blue-800">Standard</span>
-                        <span class="text-sm font-bold">$149/mo</span>
-                        <span class="text-[10px] text-slate-500">Remote Updates & Monitoring</span>
-                    </label>
-                </div>
-                <div class="p-3 border rounded-lg bg-slate-50">
-                    <label class="flex flex-col cursor-pointer">
-                        <input type="radio" name="sla-tier" value="299" onchange="calculateTotal()" class="mb-2">
-                        <span class="font-bold text-blue-800">Premium</span>
-                        <span class="text-sm font-bold">$299/mo</span>
-                        <span class="text-[10px] text-slate-500">24/7 Priority + On-site Backup</span>
-                    </label>
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded border hover:bg-white transition">
+                    <div class="flex items-center gap-4">
+                        <input type="checkbox" class="hw-item w-5 h-5" data-id="switch" data-price="799" onchange="calculateTotal()">
+                        <span class="font-medium text-slate-700">48-Port PoE++ Switch</span>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400">QTY</span>
+                            <input type="number" class="hw-qty w-12 border text-center rounded" value="1" min="1" data-target="switch" onchange="calculateTotal()">
+                        </div>
+                        <span class="font-mono text-slate-600 w-20 text-right">$799.00</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-slate-900 text-white p-6 rounded-xl mb-8 border-t-4 border-blue-600">
-            <div class="flex justify-between mb-2 text-slate-400 text-sm"><span>Hardware & Install Subtotal:</span> <span id="one-time-total">$0.00</span></div>
-            <div class="flex justify-between mb-4 text-blue-400 text-sm font-bold"><span>Recurring Monthly Service:</span> <span id="sla-total">$0.00</span></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                <label class="block text-xs font-bold uppercase text-blue-900 mb-2">Engineering Hours ($150/hr)</label>
+                <input type="number" id="labor-hours" value="1" min="1" class="w-full border p-2 rounded text-center font-bold" onchange="calculateTotal()">
+            </div>
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Monthly Maintenance Tier</label>
+                <select id="sla-choice" class="w-full border p-2 rounded bg-white" onchange="calculateTotal()">
+                    <option value="0">No SLA (Break/Fix)</option>
+                    <option value="149">Standard ($149/mo)</option>
+                    <option value="299">Premium ($299/mo)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bg-slate-900 text-white p-6 rounded-xl mb-8 shadow-inner border-t-4 border-blue-600">
+            <div class="flex justify-between mb-2 text-slate-400 text-sm"><span>Hardware & Professional Install:</span> <span id="one-time-total">$0.00</span></div>
+            <div class="flex justify-between mb-4 text-blue-400 text-sm font-bold italic"><span>Recurring Monthly Service Agreement:</span> <span id="sla-total">$0.00</span></div>
             <div class="flex justify-between text-2xl font-bold border-t border-slate-700 pt-4">
-                <span>ESTIMATED TOTAL:</span> <span id="grand-total">$0.00</span>
+                <span>INITIAL INVESTMENT:</span> <span id="grand-total">$0.00</span>
             </div>
         </div>
 
         <div class="flex flex-col md:flex-row gap-4 no-print">
-            <button onclick="sendEmail()" class="flex-1 bg-blue-700 text-white py-4 rounded-lg font-bold hover:bg-blue-800 transition shadow-lg">Submit to BBI Engineering</button>
-            <button onclick="downloadPDF()" class="flex-1 bg-slate-800 text-white py-4 rounded-lg font-bold hover:bg-
+            <button onclick="sendEmail()" class="flex-1 bg-blue-700 text-white py-4 rounded-lg font-bold hover:bg-blue-800 transition shadow-lg">Submit Mission to BBI</button>
+            <button onclick="downloadPDF()" class="flex-1 bg-slate-800 text-white py-4 rounded-lg font-bold hover:bg-slate-900 transition shadow-lg">Download Quote PDF</button>
+        </div>
+    </div>
+
+    <script>
+        (function() { emailjs.init("RFH52WT8kwrRyAhT6"); })();
+        document.getElementById('quote-date').innerText = new Date().toLocaleDateString();
+
+        function calculateTotal() {
+            let hwSub = 0;
+            document.querySelectorAll('.hw-item:checked').forEach(checkbox => {
+                const id = checkbox.getAttribute('data-id');
+                const price = parseFloat(checkbox.getAttribute('data-price'));
+                const qtyInput = document.querySelector(`.hw-qty[data-target="${id}"]`);
+                const qty = parseInt(qtyInput.value) || 1;
+                hwSub += (price * qty);
+            });
+
+            let laborHours = parseFloat(document.getElementById('labor-hours').value) || 0;
+            let laborCost = laborHours * 150;
+            if (document.getElementById('urgency').value === 'expedited') laborCost *= 1.20;
+
+            const slaMonthly = parseFloat(document.getElementById('sla-choice').value);
+            const total = hwSub + laborCost;
+
+            document.getElementById('one-time-total').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('sla-total').innerText = `$${slaMonthly.toFixed(2)}/mo`;
+            document.getElementById('grand-total').innerText = `$${total.toFixed(2)}`;
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('quote-container');
+            const name = document.getElementById('cust-name').value || 'BBI_Client';
+            html2pdf().set({
+                margin: 0.5,
+                filename: `BBI_Quote_${name}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            }).from(element).save();
+        }
+
+        function sendEmail() {
+            const name = document.getElementById('cust-name').value;
+            if(!name) { alert("Customer name required."); return; }
+            const params = {
+                customer_name: name,
+                total_amount: document.getElementById('grand-total').innerText,
+                project_details: `Hardware: ${document.getElementById('one-time-total').innerText} | Monthly: ${document.getElementById('sla-total').innerText}`,
+                reply_to: "office@battleborninfrastructures.com"
+            };
+            emailjs.send("service_ij65q1c", "template_yna3pxb", params)
+                .then(() => alert("Mission Transmitted Successfully!"))
+                .catch(() => alert("Transmission Error. Check EmailJS connectivity."));
+        }
+        calculateTotal();
+    </script>
+</body>
+</html>
