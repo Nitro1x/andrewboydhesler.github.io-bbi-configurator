@@ -1,2 +1,2 @@
-# andrewboydhesler.github.io-bbi-configurator
+# bbi-configurator
 Customer Network Diagram Design Page
