@@ -13,40 +13,35 @@
         
         <div class="flex justify-between items-center border-b-2 border-slate-900 pb-6 mb-8">
             <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tighter">BATTLEBORN INFRASTRUCTURES</h1>
-                <p class="text-blue-600 font-bold text-xs uppercase tracking-widest text-right">Precision Engineering</p>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tighter uppercase">BattleBorn</h1>
+                <p class="text-blue-600 font-bold text-xs uppercase tracking-widest">Infrastructures</p>
             </div>
             <div class="text-right">
                 <p class="text-xs text-slate-400 font-mono" id="quote-date"></p>
             </div>
         </div>
 
-        <div class="mb-8">
-            <label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Project Client</label>
-            <input type="text" id="cust-name" class="w-full border-2 border-slate-200 p-3 rounded-md focus:border-blue-500 outline-none font-bold" placeholder="NAME / ORGANIZATION">
-        </div>
-
         <div class="space-y-4 mb-8">
-            <h3 class="text-sm font-black text-slate-900 border-b pb-2 uppercase italic">Hardware Inventory</h3>
+            <h3 class="text-sm font-black text-slate-900 border-b pb-2 uppercase italic">Project Configuration</h3>
             
             <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <div class="flex items-center gap-4">
-                    <input type="checkbox" id="check-udm" class="w-5 h-5 accent-blue-600" onchange="calculateBBI()">
+                    <input type="checkbox" id="check-udm" class="w-5 h-5 accent-blue-600" onchange="runBBI()">
                     <span class="font-bold text-slate-700">Dream Machine SE</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <input type="number" id="qty-udm" value="1" min="1" class="w-12 text-center border rounded font-bold" onchange="calculateBBI()">
+                    <input type="number" id="qty-udm" value="1" min="1" class="w-12 text-center border rounded font-bold" onchange="runBBI()">
                     <span class="font-mono text-slate-500">$499</span>
                 </div>
             </div>
 
             <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <div class="flex items-center gap-4">
-                    <input type="checkbox" id="check-ap" class="w-5 h-5 accent-blue-600" onchange="calculateBBI()">
+                    <input type="checkbox" id="check-ap" class="w-5 h-5 accent-blue-600" onchange="runBBI()">
                     <span class="font-bold text-slate-700">WiFi 6 Pro AP</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <input type="number" id="qty-ap" value="1" min="1" class="w-12 text-center border rounded font-bold" onchange="calculateBBI()">
+                    <input type="number" id="qty-ap" value="1" min="1" class="w-12 text-center border rounded font-bold" onchange="runBBI()">
                     <span class="font-mono text-slate-500">$189</span>
                 </div>
             </div>
@@ -54,7 +49,7 @@
             <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div class="flex justify-between items-center">
                     <span class="font-black text-blue-900 uppercase text-xs">Engineering Labor ($150/hr)</span>
-                    <input type="number" id="labor-hours" value="1" min="1" class="w-16 text-center border-2 border-blue-300 rounded font-black text-blue-900" onchange="calculateBBI()">
+                    <input type="number" id="labor-hours" value="1" min="1" class="w-16 text-center border-2 border-blue-300 rounded font-black text-blue-900" onchange="runBBI()">
                 </div>
             </div>
         </div>
@@ -69,82 +64,58 @@
                 <span id="install-cost">$150.00</span>
             </div>
             <div class="flex justify-between items-center">
-                <span class="text-xl font-black tracking-tighter">PROJECT TOTAL</span>
+                <span class="text-xl font-black tracking-tighter uppercase">Total Estimate</span>
                 <span id="grand-total" class="text-3xl font-black text-blue-400">$150.00</span>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mt-8 no-print" id="action-row">
-            <button onclick="sendBBI()" class="bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-lg uppercase tracking-widest transition shadow-lg">Submit</button>
-            <button onclick="printBBI()" class="bg-slate-800 hover:bg-slate-900 text-white font-black py-4 rounded-lg uppercase tracking-widest transition shadow-lg">PDF Quote</button>
+            <button onclick="sendBBI()" class="bg-blue-600 text-white font-black py-4 rounded-lg uppercase tracking-widest shadow-lg">Submit</button>
+            <button onclick="pdfBBI()" class="bg-slate-800 text-white font-black py-4 rounded-lg uppercase tracking-widest shadow-lg">PDF Quote</button>
         </div>
     </div>
 
     <script>
-        // 1. Initialize EmailJS
-        (function() { emailjs.init("RFH52WT8kwrRyAhT6"); })();
+        (function() { emailjs.init("kQB8iU16sN2nEoBsI"); })();
+        document.getElementById('quote-date').innerText = new Date().toLocaleDateString();
 
-        document.getElementById('quote-date').innerText = "DATE: " + new Date().toLocaleDateString();
-
-        function calculateBBI() {
-            let hwTotal = 0;
-            
-            // Check UDM
+        function runBBI() {
+            let hw = 0;
             if(document.getElementById('check-udm').checked) {
-                hwTotal += 499 * (parseInt(document.getElementById('qty-udm').value) || 0);
+                hw += 499 * (parseInt(document.getElementById('qty-udm').value) || 0);
             }
-            
-            // Check AP
             if(document.getElementById('check-ap').checked) {
-                hwTotal += 189 * (parseInt(document.getElementById('qty-ap').value) || 0);
+                hw += 189 * (parseInt(document.getElementById('qty-ap').value) || 0);
             }
 
-            // Labor Math
-            const hours = parseFloat(document.getElementById('labor-hours').value) || 0;
-            const laborTotal = hours * 150;
+            const hrs = parseFloat(document.getElementById('labor-hours').value) || 0;
+            const labor = hrs * 150;
+            const total = hw + labor;
 
-            const finalTotal = hwTotal + laborTotal;
-
-            // Update UI
-            document.getElementById('hw-total').innerText = "$" + hwTotal.toFixed(2);
-            document.getElementById('install-cost').innerText = "$" + laborTotal.toFixed(2);
-            document.getElementById('grand-total').innerText = "$" + finalTotal.toFixed(2);
+            document.getElementById('hw-total').innerText = "$" + hw.toFixed(2);
+            document.getElementById('install-cost').innerText = "$" + labor.toFixed(2);
+            document.getElementById('grand-total').innerText = "$" + total.toFixed(2);
         }
 
-        async function printBBI() {
+        async function pdfBBI() {
             const el = document.getElementById('quote-container');
             const btns = document.getElementById('action-row');
             btns.style.display = 'none';
-
-            const opt = {
-                margin: 0.5,
-                filename: 'BBI-Project-Quote.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-
-            await html2pdf().set(opt).from(el).save();
+            await html2pdf().from(el).save();
             btns.style.display = 'grid';
         }
 
         function sendBBI() {
-            const name = document.getElementById('cust-name').value;
-            if(!name) { alert("Please enter Client Name"); return; }
-            
             const params = {
-                customer_name: name,
                 total_amount: document.getElementById('grand-total').innerText,
-                project_details: "Hardware: " + document.getElementById('hw-total').innerText + " | Labor: " + document.getElementById('install-cost').innerText
+                project_details: "BBI Configurator Quote"
             };
-
             emailjs.send("service_ij65q1c", "template_yna3pxb", params)
-                .then(() => alert("Mission Transmitted!"))
-                .catch(() => alert("Transmission Error. Check EmailJS."));
+                .then(() => alert("Transmitted!"))
+                .catch(() => alert("Error Sending."));
         }
 
-        // Run on load
-        calculateBBI();
+        runBBI(); // Initialize the $150.00 on load
     </script>
 </body>
 </html>
