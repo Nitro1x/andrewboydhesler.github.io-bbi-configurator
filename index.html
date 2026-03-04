@@ -149,9 +149,27 @@
         }
 
         function downloadPDF() {
-            const element = document.getElementById('quote-container');
-            const name = document.getElementById('cust-name').value || 'BBI_Client';
-            
+    const element = document.getElementById('quote-container');
+    const name = document.getElementById('cust-name').value || 'BBI_Client';
+    
+    // Create a specific config for BBI layout
+    const opt = {
+        margin:       [0.5, 0.5], // 0.5 inch margins
+        filename:     `BBI_Quote_${name.replace(/\s+/g, '_')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { 
+            scale: 2, 
+            useCORS: true, 
+            scrollY: 0, // Forces the capture to start from the top
+            windowWidth: document.documentElement.offsetWidth // Captures full width
+        },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // Prevents cutting mid-line
+    };
+
+    // New logic: Ensure the element is fully visible before capturing
+    html2pdf().set(opt).from(element).save();
+}
             // Adding a temporary class to hide buttons before capture
             const buttons = document.querySelector('.no-print');
             buttons.style.display = 'none';
