@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        /* Prevents buttons from appearing on the generated PDF */
+        @media print {
+            .no-print { display: none !important; }
+        }
+    </style>
 </head>
 <body class="bg-slate-50 p-4 md:p-8">
     <div id="quote-container" class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 border border-slate-200">
@@ -88,16 +94,16 @@
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
                 <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Monthly Maintenance Tier</label>
                 <select id="sla-choice" class="w-full border p-2 rounded bg-white" onchange="calculateTotal()">
-                    <option value="0">No SLA (Break/Fix)</option>
-                    <option value="149">Standard ($149/mo)</option>
-                    <option value="299">Premium ($299/mo)</option>
+                    <option value="0">No SLA (Break/Fix Only)</option>
+                    <option value="149">Standard Support ($149/mo)</option>
+                    <option value="299">Premium 24/7 Response ($299/mo)</option>
                 </select>
             </div>
         </div>
 
         <div class="bg-slate-900 text-white p-6 rounded-xl mb-8 shadow-inner border-t-4 border-blue-600">
-            <div class="flex justify-between mb-2 text-slate-400 text-sm"><span>Hardware & Professional Install:</span> <span id="one-time-total">$0.00</span></div>
-            <div class="flex justify-between mb-4 text-blue-400 text-sm font-bold italic"><span>Recurring Monthly Service Agreement:</span> <span id="sla-total">$0.00</span></div>
+            <div class="flex justify-between mb-2 text-slate-400 text-sm"><span>Build & Professional Install:</span> <span id="one-time-total">$0.00</span></div>
+            <div class="flex justify-between mb-4 text-blue-400 text-sm font-bold italic"><span>Recurring Monthly Service:</span> <span id="sla-total">$0.00</span></div>
             <div class="flex justify-between text-2xl font-bold border-t border-slate-700 pt-4">
                 <span>INITIAL INVESTMENT:</span> <span id="grand-total">$0.00</span>
             </div>
@@ -110,7 +116,11 @@
     </div>
 
     <script>
-        (function() { emailjs.init("RFH52WT8kwrRyAhT6"); })();
+        // Use an IIFE to ensure EmailJS is ready
+        (function() { 
+            emailjs.init("RFH52WT8kwrRyAhT6"); 
+        })();
+
         document.getElementById('quote-date').innerText = new Date().toLocaleDateString();
 
         function calculateTotal() {
@@ -125,41 +135,58 @@
 
             let laborHours = parseFloat(document.getElementById('labor-hours').value) || 0;
             let laborCost = laborHours * 150;
-            if (document.getElementById('urgency').value === 'expedited') laborCost *= 1.20;
+            
+            if (document.getElementById('urgency').value === 'expedited') {
+                laborCost *= 1.20;
+            }
 
             const slaMonthly = parseFloat(document.getElementById('sla-choice').value);
-            const total = hwSub + laborCost;
+            const buildTotal = hwSub + laborCost;
 
-            document.getElementById('one-time-total').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('one-time-total').innerText = `$${buildTotal.toFixed(2)}`;
             document.getElementById('sla-total').innerText = `$${slaMonthly.toFixed(2)}/mo`;
-            document.getElementById('grand-total').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('grand-total').innerText = `$${buildTotal.toFixed(2)}`;
         }
 
         function downloadPDF() {
             const element = document.getElementById('quote-container');
             const name = document.getElementById('cust-name').value || 'BBI_Client';
+            
+            // Adding a temporary class to hide buttons before capture
+            const buttons = document.querySelector('.no-print');
+            buttons.style.display = 'none';
+
             html2pdf().set({
                 margin: 0.5,
-                filename: `BBI_Quote_${name}.pdf`,
+                filename: `BBI_Quote_${name.replace(/\s+/g, '_')}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            }).from(element).save();
+            }).from(element).save().then(() => {
+                buttons.style.display = 'flex'; // Restore buttons
+            });
         }
 
         function sendEmail() {
             const name = document.getElementById('cust-name').value;
-            if(!name) { alert("Customer name required."); return; }
+            if(!name) { alert("Mission Aborted: Customer name required."); return; }
+            
             const params = {
                 customer_name: name,
                 total_amount: document.getElementById('grand-total').innerText,
-                project_details: `Hardware: ${document.getElementById('one-time-total').innerText} | Monthly: ${document.getElementById('sla-total').innerText}`,
+                project_details: `Build: ${document.getElementById('one-time-total').innerText} | SLA: ${document.getElementById('sla-total').innerText}`,
                 reply_to: "office@battleborninfrastructures.com"
             };
+
             emailjs.send("service_ij65q1c", "template_yna3pxb", params)
-                .then(() => alert("Mission Transmitted Successfully!"))
-                .catch(() => alert("Transmission Error. Check EmailJS connectivity."));
+                .then(() => alert("Mission Transmitted Successfully! BBI Engineering will review your quote."))
+                .catch((err) => {
+                    console.error("EmailJS Error:", err);
+                    alert("Transmission Error: Verify EmailJS connectivity in dashboard.");
+                });
         }
+        
+        // Initial run
         calculateTotal();
     </script>
 </body>
