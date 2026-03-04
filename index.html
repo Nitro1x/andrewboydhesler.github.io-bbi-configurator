@@ -7,12 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <style>
-        /* Prevents buttons from appearing on the generated PDF */
-        @media print {
-            .no-print { display: none !important; }
-        }
-    </style>
 </head>
 <body class="bg-slate-50 p-4 md:p-8">
     <div id="quote-container" class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 border border-slate-200">
@@ -30,11 +24,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Customer Name</label>
-                <input type="text" id="cust-name" class="w-full border p-2 rounded bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter Full Name">
+                <input type="text" id="cust-name" class="w-full border p-2 rounded bg-slate-50 outline-none" placeholder="Enter Full Name">
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Deployment Urgency</label>
-                <select id="urgency" class="w-full border p-2 rounded bg-slate-50 cursor-pointer" onchange="calculateTotal()">
+                <select id="urgency" class="w-full border p-2 rounded bg-slate-50" onchange="calculateTotal()">
                     <option value="standard">Standard (7-10 Days)</option>
                     <option value="expedited">Expedited (+20% Labor Cost)</option>
                 </select>
@@ -46,39 +40,36 @@
             <div class="space-y-3">
                 <div class="flex items-center justify-between p-3 bg-slate-50 rounded border hover:bg-white transition">
                     <div class="flex items-center gap-4">
-                        <input type="checkbox" class="hw-item w-5 h-5" data-id="udm" data-price="499" onchange="calculateTotal()">
+                        <input type="checkbox" class="hw-item w-5 h-5" id="check-udm" data-price="499" onchange="calculateTotal()">
                         <span class="font-medium text-slate-700">Ubiquiti Dream Machine SE</span>
                     </div>
                     <div class="flex items-center gap-6">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-400">QTY</span>
-                            <input type="number" class="hw-qty w-12 border text-center rounded" value="1" min="1" data-target="udm" onchange="calculateTotal()">
+                        <div class="flex items-center gap-2 text-xs text-slate-400">QTY 
+                            <input type="number" id="qty-udm" class="w-12 border text-center rounded text-black" value="1" min="1" onchange="calculateTotal()">
                         </div>
                         <span class="font-mono text-slate-600 w-20 text-right">$499.00</span>
                     </div>
                 </div>
                 <div class="flex items-center justify-between p-3 bg-slate-50 rounded border hover:bg-white transition">
                     <div class="flex items-center gap-4">
-                        <input type="checkbox" class="hw-item w-5 h-5" data-id="ap" data-price="189" onchange="calculateTotal()">
+                        <input type="checkbox" class="hw-item w-5 h-5" id="check-ap" data-price="189" onchange="calculateTotal()">
                         <span class="font-medium text-slate-700">WiFi 6 Professional AP</span>
                     </div>
                     <div class="flex items-center gap-6">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-400">QTY</span>
-                            <input type="number" class="hw-qty w-12 border text-center rounded" value="1" min="1" data-target="ap" onchange="calculateTotal()">
+                        <div class="flex items-center gap-2 text-xs text-slate-400">QTY 
+                            <input type="number" id="qty-ap" class="w-12 border text-center rounded text-black" value="1" min="1" onchange="calculateTotal()">
                         </div>
                         <span class="font-mono text-slate-600 w-20 text-right">$189.00</span>
                     </div>
                 </div>
                 <div class="flex items-center justify-between p-3 bg-slate-50 rounded border hover:bg-white transition">
                     <div class="flex items-center gap-4">
-                        <input type="checkbox" class="hw-item w-5 h-5" data-id="switch" data-price="799" onchange="calculateTotal()">
+                        <input type="checkbox" class="hw-item w-5 h-5" id="check-switch" data-price="799" onchange="calculateTotal()">
                         <span class="font-medium text-slate-700">48-Port PoE++ Switch</span>
                     </div>
                     <div class="flex items-center gap-6">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-400">QTY</span>
-                            <input type="number" class="hw-qty w-12 border text-center rounded" value="1" min="1" data-target="switch" onchange="calculateTotal()">
+                        <div class="flex items-center gap-2 text-xs text-slate-400">QTY 
+                            <input type="number" id="qty-switch" class="w-12 border text-center rounded text-black" value="1" min="1" onchange="calculateTotal()">
                         </div>
                         <span class="font-mono text-slate-600 w-20 text-right">$799.00</span>
                     </div>
@@ -101,7 +92,7 @@
             </div>
         </div>
 
-        <div class="bg-slate-900 text-white p-6 rounded-xl mb-8 shadow-inner border-t-4 border-blue-600">
+        <div class="bg-slate-900 text-white p-6 rounded-xl mb-8 border-t-4 border-blue-600">
             <div class="flex justify-between mb-2 text-slate-400 text-sm"><span>Build & Professional Install:</span> <span id="one-time-total">$0.00</span></div>
             <div class="flex justify-between mb-4 text-blue-400 text-sm font-bold italic"><span>Recurring Monthly Service:</span> <span id="sla-total">$0.00</span></div>
             <div class="flex justify-between text-2xl font-bold border-t border-slate-700 pt-4">
@@ -109,14 +100,14 @@
             </div>
         </div>
 
-        <div class="flex flex-col md:flex-row gap-4 no-print">
+        <div class="flex flex-col md:flex-row gap-4 no-print" id="action-buttons">
             <button onclick="sendEmail()" class="flex-1 bg-blue-700 text-white py-4 rounded-lg font-bold hover:bg-blue-800 transition shadow-lg">Submit Mission to BBI</button>
             <button onclick="downloadPDF()" class="flex-1 bg-slate-800 text-white py-4 rounded-lg font-bold hover:bg-slate-900 transition shadow-lg">Download Quote PDF</button>
         </div>
     </div>
 
     <script>
-        // Use an IIFE to ensure EmailJS is ready
+        // 1. Initialize EmailJS
         (function() { 
             emailjs.init("RFH52WT8kwrRyAhT6"); 
         })();
@@ -124,65 +115,64 @@
         document.getElementById('quote-date').innerText = new Date().toLocaleDateString();
 
         function calculateTotal() {
-            let hwSub = 0;
-            document.querySelectorAll('.hw-item:checked').forEach(checkbox => {
-                const id = checkbox.getAttribute('data-id');
-                const price = parseFloat(checkbox.getAttribute('data-price'));
-                const qtyInput = document.querySelector(`.hw-qty[data-target="${id}"]`);
-                const qty = parseInt(qtyInput.value) || 1;
-                hwSub += (price * qty);
-            });
+            try {
+                let hwSub = 0;
+                
+                // Hardware Math
+                const items = [
+                    { check: 'check-udm', qty: 'qty-udm', price: 499 },
+                    { check: 'check-ap', qty: 'qty-ap', price: 189 },
+                    { check: 'check-switch', qty: 'qty-switch', price: 799 }
+                ];
 
-            let laborHours = parseFloat(document.getElementById('labor-hours').value) || 0;
-            let laborCost = laborHours * 150;
-            
-            if (document.getElementById('urgency').value === 'expedited') {
-                laborCost *= 1.20;
+                items.forEach(item => {
+                    const isChecked = document.getElementById(item.check).checked;
+                    if (isChecked) {
+                        const quantity = parseInt(document.getElementById(item.qty).value) || 0;
+                        hwSub += (item.price * quantity);
+                    }
+                });
+
+                // Labor Math
+                const hours = parseFloat(document.getElementById('labor-hours').value) || 0;
+                let laborCost = hours * 150;
+                
+                if (document.getElementById('urgency').value === 'expedited') {
+                    laborCost *= 1.20;
+                }
+
+                const buildTotal = hwSub + laborCost;
+                const slaMonthly = parseFloat(document.getElementById('sla-choice').value) || 0;
+
+                // UI Update
+                document.getElementById('one-time-total').innerText = `$${buildTotal.toFixed(2)}`;
+                document.getElementById('sla-total').innerText = `$${slaMonthly.toFixed(2)}/mo`;
+                document.getElementById('grand-total').innerText = `$${buildTotal.toFixed(2)}`;
+            } catch (err) {
+                console.error("Math Error:", err);
             }
-
-            const slaMonthly = parseFloat(document.getElementById('sla-choice').value);
-            const buildTotal = hwSub + laborCost;
-
-            document.getElementById('one-time-total').innerText = `$${buildTotal.toFixed(2)}`;
-            document.getElementById('sla-total').innerText = `$${slaMonthly.toFixed(2)}/mo`;
-            document.getElementById('grand-total').innerText = `$${buildTotal.toFixed(2)}`;
         }
 
-        function downloadPDF() {
-    const element = document.getElementById('quote-container');
-    const name = document.getElementById('cust-name').value || 'BBI_Client';
-    
-    // Create a specific config for BBI layout
-    const opt = {
-        margin:       [0.5, 0.5], // 0.5 inch margins
-        filename:     `BBI_Quote_${name.replace(/\s+/g, '_')}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-            scale: 2, 
-            useCORS: true, 
-            scrollY: 0, // Forces the capture to start from the top
-            windowWidth: document.documentElement.offsetWidth // Captures full width
-        },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
-        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // Prevents cutting mid-line
-    };
+        async function downloadPDF() {
+            const element = document.getElementById('quote-container');
+            const name = document.getElementById('cust-name').value || 'BBI_Client';
+            const btnArea = document.getElementById('action-buttons');
+            
+            btnArea.style.display = 'none'; // Hide buttons for the clean PDF
 
-    // New logic: Ensure the element is fully visible before capturing
-    html2pdf().set(opt).from(element).save();
-}
-            // Adding a temporary class to hide buttons before capture
-            const buttons = document.querySelector('.no-print');
-            buttons.style.display = 'none';
-
-            html2pdf().set({
+            const opt = {
                 margin: 0.5,
                 filename: `BBI_Quote_${name.replace(/\s+/g, '_')}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
+                html2canvas: { scale: 2, scrollY: 0 },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            }).from(element).save().then(() => {
-                buttons.style.display = 'flex'; // Restore buttons
-            });
+            };
+
+            try {
+                await html2pdf().set(opt).from(element).save();
+            } finally {
+                btnArea.style.display = 'flex'; // Bring buttons back
+            }
         }
 
         function sendEmail() {
@@ -197,15 +187,11 @@
             };
 
             emailjs.send("service_ij65q1c", "template_yna3pxb", params)
-                .then(() => alert("Mission Transmitted Successfully! BBI Engineering will review your quote."))
-                .catch((err) => {
-                    console.error("EmailJS Error:", err);
-                    alert("Transmission Error: Verify EmailJS connectivity in dashboard.");
-                });
+                .then(() => alert("Mission Transmitted Successfully!"))
+                .catch((err) => alert("Transmission Error: Check dashboard settings."));
         }
         
-        // Initial run
-        calculateTotal();
+        calculateTotal(); // Run once on startup
     </script>
 </body>
 </html>
