@@ -106,16 +106,30 @@
         }
 
         function sendBBI() {
-            const params = {
-                total_amount: document.getElementById('grand-total').innerText,
-                project_details: "BBI Configurator Quote"
-            };
-            emailjs.send("service_i3y37up", "template_szzyg8f", params)
-                .then(() => alert("Transmitted!"))
-                .catch(() => alert("Error Sending."));
-        }
+    const name = document.getElementById('cust-name').value;
+    if(!name) { 
+        alert("Mission Aborted: Please enter a Client Name so I know who this is for."); 
+        return; 
+    }
+    
+    // These keys MUST match the {{variable_names}} in your EmailJS Template
+    const params = {
+        customer_name: name,
+        total_amount: document.getElementById('grand-total').innerText,
+        hw_total: document.getElementById('hw-total').innerText,
+        labor_total: document.getElementById('install-cost').innerText,
+        reply_to: "office@battleborninfrastructures.com"
+    };
 
-        runBBI(); // Initialize the $150.00 on load
-    </script>
-</body>
-</html>
+    console.log("Attempting to transmit to BBI HQ...", params);
+
+    emailjs.send("service_i3y37up", "template_szzyg8f", params)
+        .then((res) => {
+            console.log("SUCCESS!", res.status, res.text);
+            alert("Mission Transmitted! BBI Engineering has received your request.");
+        })
+        .catch((err) => {
+            console.error("TRANSMISSION FAILURE:", err);
+            alert("Error: Check your EmailJS Dashboard. Is the Service ID 'service_i3y37up' correct?");
+        });
+}
